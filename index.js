@@ -20,8 +20,8 @@ var auth = {
     return sha1.digest('hex');
   },
 
-  check: function (signature, timestamp, nonce) {
-    var newSignature = this.generateSignature(this.accessToken, timestamp, nonce);
+  check: function (token, signature, timestamp, nonce) {
+    var newSignature = this.generateSignature(token, timestamp, nonce);
     if (newSignature === signature) {
       return true;
     }
@@ -56,7 +56,7 @@ var auth = {
       cb(error, json);
     });
   },
-  ack: function(req, res, cb) {
+  ack: function(token, req, res, cb) {
     var data = {};
     var error = {};
     var conf = require('./validations/ack');
@@ -65,7 +65,7 @@ var auth = {
       cb(true, 1);
       return;
     }
-    var check = this.check(data.signature, data.timestamp, data.nonce);
+    var check = this.check(token, data.signature, data.timestamp, data.nonce);
     if (check) {
       cb(false, data.echostr);
     } else {

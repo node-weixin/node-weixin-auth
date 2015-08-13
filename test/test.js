@@ -1,15 +1,13 @@
 'use strict';
 var assert = require('assert');
 var nodeWeixinAuth = require('../');
-var util = require('node-weixin-util');
 var errors = require('web-errors').errors;
 
 var app = {
   id: process.env.APP_ID,
-  secret: process.env.APP_SECRET
+  secret: process.env.APP_SECRET,
+  token: process.env.APP_TOKEN
 };
-
-var accessToken, timestamp, nonce, sign;
 
 var request = require('supertest');
 var express = require('express');
@@ -21,7 +19,7 @@ server.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
 
 server.post('/weixin', function (req, res) {
-  nodeWeixinAuth.ack(req, res, function (error, data) {
+  nodeWeixinAuth.ack(app.token, req, res, function (error, data) {
     if (!error) {
       res.send(data);
       return;
@@ -43,8 +41,8 @@ server.post('/weixin', function (req, res) {
 describe('node-weixin-auth node module', function () {
   it('should generate signature and check it', function () {
 
-    timestamp = 1439402998232;
-    nonce = 'wo1cn2NJPRnZWiTuQW8zQ6Mzn4qQ3kWi';
+    var timestamp = 1439402998232;
+    var nonce = 'wo1cn2NJPRnZWiTuQW8zQ6Mzn4qQ3kWi';
     var token = 'sososso';
     var sign = nodeWeixinAuth.generateSignature(token, timestamp, nonce);
     assert.equal(true, sign === '886a1db814d97a26c081a9814a47bf0b9ff1da9c');
@@ -88,12 +86,6 @@ describe('node-weixin-auth node module', function () {
 
   it('should be able to get a token and checkit', function (done) {
     nodeWeixinAuth.tokenize(app, function (error, json) {
-      accessToken = json.access_token;
-      timestamp = new Date().getTime();
-      nonce = util.getNonce();
-      sign = nodeWeixinAuth.generateSignature(accessToken, timestamp, nonce);
-      assert.equal(true, nodeWeixinAuth.check(sign, timestamp, nonce));
-
       assert.equal(true, !error);
       assert.equal(true, json.access_token.length > 1);
       assert.equal(true, json.expires_in <= 7200);
@@ -106,7 +98,7 @@ describe('node-weixin-auth node module', function () {
 
     var time = new Date().getTime();
     var nonce = 'nonce';
-    var signature = nodeWeixinAuth.generateSignature(nodeWeixinAuth.accessToken, time, nonce);
+    var signature = nodeWeixinAuth.generateSignature(app.token, time, nonce);
     var echostr = 'Hello world!';
     var data = {
       signature: signature,
@@ -125,7 +117,7 @@ describe('node-weixin-auth node module', function () {
   it('should be failed to auth weixin signature', function (done) {
     var time = new Date().getTime();
     var nonce = 'nonce';
-    var signature = nodeWeixinAuth.generateSignature(accessToken, time, nonce);
+    var signature = nodeWeixinAuth.generateSignature(app.token, time, nonce);
     var data = {
       signature: signature,
       timestamp: time,
