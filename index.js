@@ -2,14 +2,15 @@
 var crypto = require('crypto');
 var restful = require('node-weixin-request');
 var util = require('node-weixin-util');
+var validator = require('node-form-validator');
 
 //Last time got a token
 var lastTime = null;
-var accessToken = null;
 
 
 var auth = {
   ACCESS_TOKEN_EXP: 7200 * 1000,
+  accessToken: null,
   generateSignature: function (token, timestamp, nonce) {
     var mixes = [token, timestamp, nonce];
     mixes.sort();
@@ -20,7 +21,7 @@ var auth = {
   },
 
   check: function (signature, timestamp, nonce) {
-    var newSignature = auth.generateSignature(accessToken, timestamp, nonce);
+    var newSignature = this.generateSignature(this.accessToken, timestamp, nonce);
     if (newSignature === signature) {
       return true;
     }
@@ -50,10 +51,26 @@ var auth = {
 
     restful.request(url, null, function (error, json) {
       if (!error) {
-        accessToken = json.access_token;
+        auth.accessToken = json.access_token;
       }
       cb(error, json);
     });
+  },
+  ack: function(req, res, cb) {
+    var data = {};
+    var error = {};
+    var conf = require('./validations/ack');
+
+    if (!validator.v(req, conf, data, error)) {
+      cb(true, 1);
+      return;
+    }
+    var check = this.check(data.signature, data.timestamp, data.nonce);
+    if (check) {
+      cb(false, data.echostr);
+    } else {
+      cb(true, 2);
+    }
   }
 };
 
