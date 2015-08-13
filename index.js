@@ -4,12 +4,12 @@ var restful = require('node-weixin-request');
 var util = require('node-weixin-util');
 
 //Last time got a token
-var ACCESS_TOKEN_EXP = 7200;
 var lastTime = null;
 var accessToken = null;
 
 
 var auth = {
+  ACCESS_TOKEN_EXP: 7200 * 1000,
   generateSignature: function (token, timestamp, nonce) {
     var mixes = [token, timestamp, nonce];
     mixes.sort();
@@ -29,7 +29,7 @@ var auth = {
 
   determine: function (app, cb) {
     var now = new Date().getTime();
-    if (lastTime && ((now - lastTime) < ACCESS_TOKEN_EXP)) {
+    if (lastTime && ((now - lastTime) < this.ACCESS_TOKEN_EXP)) {
       cb(true);
       return;
     }
