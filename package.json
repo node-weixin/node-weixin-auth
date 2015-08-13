@@ -1,6 +1,6 @@
 {
   "name": "node-weixin-auth",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Server auth for weixin apis",
   "author": {
     "name": "JSSDKCN",
@@ -10,7 +10,8 @@
   "repository": "JSSDKCN/node-weixin-auth",
   "license": "MIT",
   "files": [
-    "index.js"
+    "index.js",
+    "validations"
   ],
   "keywords": [
     "node-weixin-auth",
