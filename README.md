@@ -13,9 +13,25 @@ $ npm install --save node-weixin-auth
 ## Usage
 
 ```js
+
+
 var nodeWeixinAuth = require('node-weixin-auth');
 
-nodeWeixinAuth('Rainbow');
+var app = {
+  id: '',
+  secret: ''
+};
+
+//手动得到accessToken
+nodeWeixinAuth.tokenize(app, function (error, json) {
+  var accessToken = json.access_token;
+});
+
+//自动获得accessToken，并发送需要accessToken的请求
+nodeWeixinAuth.determine(app, function () {
+  //这里添加发送请求的代码
+});
+
 ```
 
 
