@@ -1,6 +1,6 @@
 {
   "name": "node-weixin-auth",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Server auth for weixin apis",
   "author": {
     "name": "JSSDKCN",

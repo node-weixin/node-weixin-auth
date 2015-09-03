@@ -3,14 +3,11 @@ var crypto = require('crypto');
 var restful = require('node-weixin-request');
 var util = require('node-weixin-util');
 var validator = require('node-form-validator');
-
 //Last time got a token
-var lastTime = null;
-
-
 var auth = {
   ACCESS_TOKEN_EXP: 7200 * 1000,
   accessToken: null,
+  lastTime: null,
   generateSignature: function (token, timestamp, nonce) {
     var mixes = [token, timestamp, nonce];
     mixes.sort();
@@ -19,7 +16,6 @@ var auth = {
     sha1.update(str);
     return sha1.digest('hex');
   },
-
   check: function (token, signature, timestamp, nonce) {
     var newSignature = this.generateSignature(token, timestamp, nonce);
     if (newSignature === signature) {
@@ -27,19 +23,17 @@ var auth = {
     }
     return false;
   },
-
   determine: function (app, cb) {
     var now = new Date().getTime();
-    if (lastTime && ((now - lastTime) < this.ACCESS_TOKEN_EXP)) {
+    if (this.lastTime && ((now - this.lastTime) < this.ACCESS_TOKEN_EXP)) {
       cb(true);
       return;
     }
-    lastTime = now;
-    this.tokenize(app, function() {
+    this.lastTime = now;
+    this.tokenize(app, function () {
       cb(false);
     });
   },
-
   tokenize: function (app, cb) {
     var baseUrl = 'https://api.weixin.qq.com/cgi-bin/';
     var params = {
@@ -48,7 +42,6 @@ var auth = {
       secret: app.secret
     };
     var url = baseUrl + 'token?' + util.toParam(params);
-
     restful.request(url, null, function (error, json) {
       if (!error) {
         auth.accessToken = json.access_token;
@@ -56,11 +49,10 @@ var auth = {
       cb(error, json);
     });
   },
-  ack: function(token, req, res, cb) {
+  ack: function (token, req, res, cb) {
     var data = {};
     var error = {};
     var conf = require('./validations/ack');
-
     if (!validator.v(req, conf, data, error)) {
       cb(true, 1);
       return;
@@ -73,5 +65,4 @@ var auth = {
     }
   }
 };
-
 module.exports = auth;
