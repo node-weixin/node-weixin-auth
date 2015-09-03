@@ -1,3 +1,4 @@
+/*jslint node: true */
 'use strict';
 var crypto = require('crypto');
 var restful = require('node-weixin-request');
