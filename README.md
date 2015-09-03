@@ -70,12 +70,12 @@ server.post('/weixin/ack', function (req, res) {
 
 ## License
 
-MIT © [JSSDKCN](blog.3gcnbeta.com)
+MIT © [node-weixin](blog.3gcnbeta.com)
 
 
 [npm-image]: https://badge.fury.io/js/node-weixin-auth.svg
 [npm-url]: https://npmjs.org/package/node-weixin-auth
-[travis-image]: https://travis-ci.org/JSSDKCN/node-weixin-auth.svg?branch=master
-[travis-url]: https://travis-ci.org/JSSDKCN/node-weixin-auth
-[daviddm-image]: https://david-dm.org/JSSDKCN/node-weixin-auth.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/JSSDKCN/node-weixin-auth
+[travis-image]: https://travis-ci.org/node-weixin/node-weixin-auth.svg?branch=master
+[travis-url]: https://travis-ci.org/node-weixin/node-weixin-auth
+[daviddm-image]: https://david-dm.org/node-weixin/node-weixin-auth.svg?theme=shields.io
+[daviddm-url]: https://david-dm.org/node-weixin/node-weixin-auth
