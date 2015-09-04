@@ -47,11 +47,11 @@ Auth.prototype.tokenize = function (app, cb) {
     appid: app.id,
     secret: app.secret
   };
-  var auth = this;
+  var self = this;
   var url = baseUrl + 'token?' + util.toParam(params);
   restful.request(url, null, function (error, json) {
     if (!error) {
-      auth.accessToken = json.access_token;
+      self.accessToken = json.access_token;
     }
     cb(error, json);
   });
@@ -72,6 +72,22 @@ Auth.prototype.ack = function (token, req, res, cb) {
     cb(true, 2);
   }
 };
+
+Auth.prototype.ack2 = function (token, data, cb) {
+  var error = {};
+  var conf = require('./validations/ack');
+  if (!validator.validate(conf, data, error)) {
+    cb(true, error);
+    return;
+  }
+  var check = this.check(token, data.signature, data.timestamp, data.nonce);
+  if (check) {
+    cb(false, data.echostr);
+  } else {
+    cb(true, 2);
+  }
+};
+
 Auth.prototype.create = function() {
   return new Auth();
 };
