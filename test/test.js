@@ -1,7 +1,6 @@
 'use strict';
 var assert = require('assert');
 var nodeWeixinAuth = require('../');
-var validator = require("node-form-validator");
 var errors = require('web-errors').errors;
 var app = {
   id: process.env.APP_ID,
