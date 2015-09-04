@@ -58,6 +58,7 @@ Auth.prototype.tokenize = function (app, cb) {
 };
 
 Auth.prototype.ack = function (token, req, res, cb) {
+  console.warn('this method is deprecated, and later may be changed');
   var data = {};
   var error = {};
   var conf = require('./validations/ack');
@@ -73,7 +74,12 @@ Auth.prototype.ack = function (token, req, res, cb) {
   }
 };
 
-Auth.prototype.ack2 = function (token, data, cb) {
+Auth.prototype.extract = function(data) {
+  var conf = require('./validations/ack');
+  return validator.json.extract(data, conf);
+};
+
+Auth.prototype.ack = function (token, data, cb) {
   var error = {};
   var conf = require('./validations/ack');
   if (!validator.validate(conf, data, error)) {

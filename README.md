@@ -19,7 +19,8 @@ var nodeWeixinAuth = require('node-weixin-auth');
 
 var app = {
   id: '',
-  secret: ''
+  secret: '',
+  token: ''
 };
 
 //手动得到accessToken
@@ -31,7 +32,6 @@ nodeWeixinAuth.tokenize(app, function (error, json) {
 nodeWeixinAuth.determine(app, function () {
   //这里添加发送请求的代码
 });
-
 
 
 //与微信对接服务器的验证
@@ -46,7 +46,8 @@ server.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
 
 server.post('/weixin/ack', function (req, res) {
-  nodeWeixinAuth.ack(req, res, function (error, data) {
+  var data = nodeWeixinAuth.extract(req.body);
+  nodeWeixinAuth.ack(app.token, data, function (error, data) {
     if (!error) {
       res.send(data);
       return;
