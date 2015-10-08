@@ -1,7 +1,49 @@
 #  [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 
-> Server auth for weixin apis
+微信服务器Auth模块是([node-weixin-api](https://github.com/node-weixin/node-weixin-api) 或者 [node-weixin-express](https://github.com/node-weixin/node-weixin-express))的一个子项目。
+它提供了几个重要的方法
 
+  tokenize： 用于跟服务器验证配置信息
+  
+  determine:  用于自动tokenize所有的api请求，而不需要手动在超时时重新请求
+  
+  ips:  获取服务IP列表
+  
+  ack: 用于服务器有效性验证
+  
+交流QQ群: 39287176
+
+注:
+
+ [node-weixin-express](https://github.com/node-weixin/node-weixin-express)是基于node-weixin-*的服务器端参考实现。
+
+ [node-weixin-api](https://github.com/node-weixin/node-weixin-api)是基于node-weixin-*的API接口SDK。
+
+ 它们都是由下列子项目组合而成:
+
+ 1. [node-weixin-config](https://github.com/node-weixin/node-weixin-config)
+    用于微信配置信息的校验,
+    
+ 2. [node-weixin-auth](https://github.com/node-weixin/node-weixin-auth)
+    用于与微信服务器握手检验
+
+ 3. [node-weixin-util](https://github.com/node-weixin/node-weixin-util)
+    一些常用的微信请求，加密，解密，检验的功能与处理
+
+ 4. [node-weixin-request](https://github.com/node-weixin/node-weixin-request)
+    微信的各类服务的HTTP请求的抽象集合
+
+ 5. [node-weixin-oauth](https://github.com/node-weixin/node-weixin-oauth)
+    微信OAuth相关的操作
+
+ 6. [node-weixin-pay](https://github.com/node-weixin/node-weixin-pay)
+    微信支付的服务器接口
+
+ 7. [node-weixin-jssdk](https://github.com/node-weixin/node-weixin-jssdk)
+    微信JSSDK相关的服务器接口
+
+ 8. [node-weixin-menu](https://github.com/node-weixin/node-weixin-menu)
+    微信菜单相关的操作与命令
 
 ## Install
 
@@ -31,6 +73,12 @@ nodeWeixinAuth.tokenize(app, function (error, json) {
 //自动获得accessToken，并发送需要accessToken的请求
 nodeWeixinAuth.determine(app, function () {
   //这里添加发送请求的代码
+});
+
+//获取服务器IP
+nodeWeixinAuth.ips(app, function (error, data) {
+  //error == false
+  //data.ip_list获取IP列表
 });
 
 

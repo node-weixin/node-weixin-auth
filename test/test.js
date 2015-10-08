@@ -118,4 +118,13 @@ describe('node-weixin-auth node module', function () {
     };
     request(server).post('/weixin').send(data).expect(200).end(done);
   });
+
+  it('should be able to get server ips', function (done) {
+
+    nodeWeixinAuth.ips(app, function(error, data) {
+      assert.equal(true, !error);
+      assert.equal(true, data.ip_list.length > 1);
+      done();
+    });
+  });
 });

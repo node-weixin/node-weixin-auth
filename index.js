@@ -94,6 +94,16 @@ Auth.prototype.ack = function (token, data, cb) {
   }
 };
 
+Auth.prototype.ips = function(app, cb) {
+  var auth = this;
+  this.determine(app, function() {
+    var url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?' + util.toParam({
+        access_token: auth.accessToken
+      });
+    restful.json(url, null, cb);
+  });
+};
+
 Auth.prototype.create = function() {
   return new Auth();
 };
