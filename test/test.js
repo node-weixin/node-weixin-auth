@@ -37,11 +37,6 @@ server.post('/weixin', function (req, res) {
   });
 });
 describe('node-weixin-auth node module', function () {
-  it('should be able to create an equal one', function () {
-    var nwa = nodeWeixinAuth.create();
-    assert.deepEqual(nwa, nodeWeixinAuth);
-    nodeWeixinAuth = nwa;
-  });
   it('should generate signature and check it', function () {
     var timestamp = 1439402998232;
     var nonce = 'wo1cn2NJPRnZWiTuQW8zQ6Mzn4qQ3kWi';
