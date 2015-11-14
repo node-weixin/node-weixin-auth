@@ -37,6 +37,7 @@
     "istanbul": "^0.4.0",
     "jshint-stylish": "^1.0.1",
     "load-grunt-tasks": "^3.1.0",
+    "mocha": "^2.3.3",
     "time-grunt": "^1.1.0",
     "web-errors": "^0.1.5"
   },
