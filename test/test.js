@@ -36,6 +36,52 @@ server.post('/weixin', function (req, res) {
     }
   });
 });
+
+server.post('/weixinfail', function (req, res) {
+  var data = nodeWeixinAuth.extract(req.body);
+
+  nodeWeixinAuth.ack(app.token, {}, function (error, data) {
+    if (!error) {
+      res.send(data);
+      return;
+    }
+    switch (error) {
+      case 1:
+        res.send(errors.INPUT_INVALID);
+        break;
+      case 2:
+        res.send(errors.SIGNATURE_NOT_MATCH);
+        break;
+      default:
+        res.send(errors.UNKNOWN_ERROR);
+        break;
+    }
+  });
+});
+
+
+server.post('/weixinfail2', function (req, res) {
+  var data = nodeWeixinAuth.extract(req.body);
+
+  nodeWeixinAuth.ack('sdfsfdfds', data, function (error, data) {
+    if (!error) {
+      res.send(data);
+      return;
+    }
+    switch (error) {
+      case 1:
+        res.send(errors.INPUT_INVALID);
+        break;
+      case 2:
+        res.send(errors.SIGNATURE_NOT_MATCH);
+        break;
+      default:
+        res.send(errors.UNKNOWN_ERROR);
+        break;
+    }
+  });
+});
+
 describe('node-weixin-auth node module', function () {
   it('should generate signature and check it', function () {
     var timestamp = 1439402998232;
@@ -45,6 +91,15 @@ describe('node-weixin-auth node module', function () {
     assert.equal(true, sign ===
       '886a1db814d97a26c081a9814a47bf0b9ff1da9c');
   });
+
+  it('should check failed', function () {
+    var timestamp = 1439402998232;
+    var nonce = 'wo1cn2NJPRnZWiTuQW8zQ6Mzn4qQ3kWi';
+    var token = 'sososso';
+    var result = nodeWeixinAuth.check(token, 'soso', timestamp, nonce);
+    assert.equal(true, !result);
+  });
+
   it('should be able to get a token', function (done) {
     nodeWeixinAuth.tokenize(app, function (error, json) {
       assert.equal(true, !error);
@@ -112,6 +167,38 @@ describe('node-weixin-auth node module', function () {
       nonce: nonce
     };
     request(server).post('/weixin').send(data).expect(200).end(done);
+  });
+
+  it('should be fail to auth weixin signature', function (done) {
+    var time = new Date().getTime();
+    var nonce = 'nonce';
+    var signature = nodeWeixinAuth.generateSignature(app.token, time,
+      nonce);
+    var echostr = 'Hello world!';
+    var data = {
+      signature: signature,
+      timestamp: time,
+      nonce: nonce,
+      echostr: echostr
+    };
+    request(server).post('/weixinfail').send(data).expect(200).expect(
+      errors.UNKNOWN_ERROR).end(done);
+  });
+
+  it('should be fail to auth weixin signature 2', function (done) {
+    var time = new Date().getTime();
+    var nonce = 'nonce';
+    var signature = nodeWeixinAuth.generateSignature(app.token, time,
+      nonce);
+    var echostr = 'Hello world!';
+    var data = {
+      signature: signature,
+      timestamp: time,
+      nonce: nonce,
+      echostr: echostr
+    };
+    request(server).post('/weixinfail2').send(data).expect(200).expect(
+      errors.UNKNOWN_ERROR).end(done);
   });
 
   it('should be able to get server ips', function (done) {
