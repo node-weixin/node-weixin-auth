@@ -38,8 +38,6 @@ server.post('/weixin', function (req, res) {
 });
 
 server.post('/weixinfail', function (req, res) {
-  var data = nodeWeixinAuth.extract(req.body);
-
   nodeWeixinAuth.ack(app.token, {}, function (error, data) {
     if (!error) {
       res.send(data);
