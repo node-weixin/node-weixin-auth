@@ -57,7 +57,7 @@ module.exports = {
   ack: function (token, data, cb) {
     var error = {};
     var conf = require('./validations/ack');
-    if (!validator.validate(conf, data, error)) {
+    if (!validator.validate(data, conf, error)) {
       cb(true, error);
       return;
     }
