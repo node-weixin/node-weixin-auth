@@ -119,7 +119,7 @@ server.post('/weixin/ack', function (req, res) {
 
 ## License
 
-MIT © [node-weixin](blog.3gcnbeta.com)
+MIT © [node-weixin](www.node-weixin.com)
 
 
 [npm-image]: https://badge.fury.io/js/node-weixin-auth.svg
