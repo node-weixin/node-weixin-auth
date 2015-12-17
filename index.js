@@ -4,6 +4,7 @@ var crypto = require('crypto');
 var restful = require('node-weixin-request');
 var util = require('node-weixin-util');
 var validator = require('node-form-validator');
+var emitter = require('node-weixin-events');
 
 module.exports = {
   ACCESS_TOKEN_EXP: 7200 * 1000,
@@ -46,6 +47,7 @@ module.exports = {
       if (!error) {
         app.auth = app.auth || {};
         app.auth.accessToken = json.access_token;
+        emitter.emit(emitter.ACCESS_TOKEN_NOTIFY, [json.access_token]);
       }
       cb(error, json);
     });

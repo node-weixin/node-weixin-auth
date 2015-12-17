@@ -22,6 +22,7 @@
   ],
   "dependencies": {
     "node-form-validator": "^0.2.0",
+    "node-weixin-events": "0.0.2",
     "node-weixin-request": "^0.3.0",
     "node-weixin-util": "^0.2.0"
   },
