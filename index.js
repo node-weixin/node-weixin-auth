@@ -5,6 +5,7 @@ var restful = require('node-weixin-request');
 var util = require('node-weixin-util');
 var validator = require('node-form-validator');
 var emitter = require('node-weixin-events');
+var settings = require('node-weixin-settings');
 
 module.exports = {
   ACCESS_TOKEN_EXP: 7200 * 1000,
@@ -24,13 +25,18 @@ module.exports = {
     return false;
   },
   determine: function (app, cb) {
+    var auth = settings.get(app.id, 'auth');
     var now = new Date().getTime();
-    app.auth = app.auth || {};
-    if (app.auth.lastTime && ((now - app.auth.lastTime) < this.ACCESS_TOKEN_EXP)) {
+    if (!auth) {
+      auth = {};
+    }
+
+    if (auth.lastTime && ((now - auth.lastTime) < this.ACCESS_TOKEN_EXP)) {
       cb(true);
       return;
     }
-    app.auth.lastTime = now;
+    auth.lastTime = now;
+    settings.set(app.id, 'auth', auth);
     this.tokenize(app, function () {
       cb(false);
     });
@@ -45,9 +51,13 @@ module.exports = {
     var url = baseUrl + 'token?' + util.toParam(params);
     restful.request(url, null, function (error, json) {
       if (!error) {
-        app.auth = app.auth || {};
-        app.auth.accessToken = json.access_token;
-        emitter.emit(emitter.ACCESS_TOKEN_NOTIFY, [json.access_token]);
+        var auth = settings.get(app.id, 'auth');
+        if (!auth) {
+          auth = {};
+        }
+        auth.accessToken = json.access_token;
+        settings.set(app.id, 'auth', auth);
+        emitter.emit(emitter.ACCESS_TOKEN_NOTIFY, [auth.accessToken]);
       }
       cb(error, json);
     });
@@ -72,8 +82,10 @@ module.exports = {
   },
   ips: function (app, cb) {
     this.determine(app, function () {
+      var auth = settings.get(app.id, 'auth');
+
       var url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?' + util.toParam({
-          access_token: app.auth.accessToken
+          access_token: auth.accessToken
         });
       restful.json(url, null, cb);
     });

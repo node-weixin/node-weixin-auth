@@ -1,15 +1,21 @@
 'use strict';
 var assert = require('assert');
-var nodeWeixinAuth = require('../');
+var express = require('express');
+var bodyParser = require('body-parser');
 var errors = require('web-errors').errors;
+var settings = require('node-weixin-settings');
+
+var request = require('supertest');
+
+var nodeWeixinAuth = require('../');
+
+
 var app = {
   id: process.env.APP_ID,
   secret: process.env.APP_SECRET,
   token: process.env.APP_TOKEN
 };
-var request = require('supertest');
-var express = require('express');
-var bodyParser = require('body-parser');
+
 var server = express();
 server.use(bodyParser.urlencoded({
     extended: false
@@ -100,15 +106,20 @@ describe('node-weixin-auth node module', function () {
 
   it('should be able to get a token', function (done) {
     nodeWeixinAuth.tokenize(app, function (error, json) {
+      var auth = settings.get(app.id, 'auth');
       assert.equal(true, !error);
       assert.equal(true, json.access_token.length > 1);
       assert.equal(true, json.expires_in <= 7200);
       assert.equal(true, json.expires_in >= 7000);
+      assert.equal(true, json.access_token === auth.accessToken);
+
       done();
     });
   });
   it('should be able to determine to request within expiration', function (done) {
     nodeWeixinAuth.determine(app, function (passed) {
+      var auth = settings.get(app.id, 'auth');
+      assert.equal(true, auth.lastTime !== null);
       assert.equal(true, !passed);
       setTimeout(function () {
         nodeWeixinAuth.determine(app, function (passed) {
