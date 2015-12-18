@@ -1,6 +1,6 @@
 {
   "name": "node-weixin-auth",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Server auth for weixin apis",
   "author": {
     "name": "JSSDKCN",
@@ -24,7 +24,7 @@
     "node-form-validator": "^0.2.0",
     "node-weixin-events": "0.0.3",
     "node-weixin-request": "^0.3.0",
-    "node-weixin-settings": "0.0.4",
+    "node-weixin-settings": "0.0.6",
     "node-weixin-util": "^0.2.0"
   },
   "devDependencies": {
