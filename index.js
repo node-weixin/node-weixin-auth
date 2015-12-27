@@ -57,7 +57,7 @@ module.exports = {
         }
         auth.accessToken = json.access_token;
         settings.set(app.id, 'auth', auth);
-        emitter.emit(emitter.ACCESS_TOKEN_NOTIFY, [auth.accessToken]);
+        emitter.emit(emitter.ACCESS_TOKEN_NOTIFY, [app, auth]);
       }
       cb(error, json);
     });

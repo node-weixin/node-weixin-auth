@@ -4,11 +4,14 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var errors = require('web-errors').errors;
 var settings = require('node-weixin-settings');
+var events = require('node-weixin-events');
 
 var request = require('supertest');
 
 var nodeWeixinAuth = require('../');
 
+
+var callbacks = [];
 
 var app = {
   id: process.env.APP_ID,
@@ -86,6 +89,14 @@ server.post('/weixinfail2', function (req, res) {
   });
 });
 
+events.on(events.ACCESS_TOKEN_NOTIFY, function(eventApp, eventAuth) {
+  var auth = settings.get(app.id, 'auth');
+
+  assert.deepEqual(eventApp, app);
+  assert.equal(true, eventAuth.accessToken === auth.accessToken);
+  callbacks.push([eventApp, eventAuth]);
+});
+
 describe('node-weixin-auth node module', function () {
   it('should generate signature and check it', function () {
     var timestamp = 1439402998232;
@@ -112,8 +123,8 @@ describe('node-weixin-auth node module', function () {
       assert.equal(true, json.expires_in <= 7200);
       assert.equal(true, json.expires_in >= 7000);
       assert.equal(true, json.access_token === auth.accessToken);
-
       done();
+
     });
   });
   it('should be able to determine to request within expiration', function (done) {
@@ -217,5 +228,20 @@ describe('node-weixin-auth node module', function () {
       assert.equal(true, data.ip_list.length > 1);
       done();
     });
+  });
+
+
+  it('should be able to get notified when access Token updated', function () {
+    var auth = settings.get(app.id, 'auth');
+    for(var i = 0; i < callbacks.length; i++) {
+      var callback = callbacks[i];
+      var appInfo = callback[0];
+      var authInfo = callback[1];
+      assert.equal(true, appInfo.id === app.id);
+      assert.equal(true, appInfo.token === app.token);
+      assert.equal(true, appInfo.secret === app.secret);
+      assert.equal(true, authInfo.accessToken === auth.accessToken);
+    }
+    assert.equal(true, callbacks.length >= 1);
   });
 });
