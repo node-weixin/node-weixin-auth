@@ -25,21 +25,27 @@ module.exports = {
     return false;
   },
   determine: function (app, cb) {
-    var auth = settings.get(app.id, 'auth');
-    var now = new Date().getTime();
-    if (!auth) {
-      auth = {};
-    }
+    var self = this;
+    settings.get(app.id, 'auth', function (auth) {
+      var now = new Date().getTime();
+      if (!auth) {
+        auth = {};
+      }
 
-    if (auth.lastTime && ((now - auth.lastTime) < this.ACCESS_TOKEN_EXP)) {
-      cb(true);
-      return;
-    }
-    auth.lastTime = now;
-    settings.set(app.id, 'auth', auth);
-    this.tokenize(app, function () {
-      cb(false);
+      if (auth.lastTime && ((now - auth.lastTime) < self.ACCESS_TOKEN_EXP)) {
+        cb(true);
+        return;
+      }
+      auth.lastTime = now;
+      settings.set(app.id, 'auth', auth, function () {
+        self.tokenize(app, function () {
+          cb(false);
+        });
+      });
+
     });
+
+
   },
   tokenize: function (app, cb) {
     var baseUrl = 'https://api.weixin.qq.com/cgi-bin/';
@@ -50,16 +56,20 @@ module.exports = {
     };
     var url = baseUrl + 'token?' + util.toParam(params);
     restful.request(url, null, function (error, json) {
-      if (!error) {
-        var auth = settings.get(app.id, 'auth');
+      if (error) {
+        cb(error, json);
+        return;
+      }
+      settings.get(app.id, 'auth', function (auth) {
         if (!auth) {
           auth = {};
         }
         auth.accessToken = json.access_token;
-        settings.set(app.id, 'auth', auth);
-        emitter.emit(emitter.ACCESS_TOKEN_NOTIFY, [app, auth]);
-      }
-      cb(error, json);
+        settings.set(app.id, 'auth', auth, function() {
+          emitter.emit(emitter.ACCESS_TOKEN_NOTIFY, [app, auth]);
+          cb(error, json);
+        });
+      });
     });
   },
   extract: function (data) {
@@ -82,12 +92,13 @@ module.exports = {
   },
   ips: function (app, cb) {
     this.determine(app, function () {
-      var auth = settings.get(app.id, 'auth');
+      settings.get(app.id, 'auth', function (auth) {
+        var url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?' + util.toParam({
+            access_token: auth.accessToken
+          });
+        restful.json(url, null, cb);
+      });
 
-      var url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?' + util.toParam({
-          access_token: auth.accessToken
-        });
-      restful.json(url, null, cb);
     });
   }
 };

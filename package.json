@@ -1,6 +1,6 @@
 {
   "name": "node-weixin-auth",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "description": "Server auth for weixin apis",
   "author": {
     "name": "JSSDKCN",
@@ -21,10 +21,10 @@
     "node"
   ],
   "dependencies": {
-    "node-form-validator": "^0.2.0",
+    "node-form-validator": "^0.3.0",
     "node-weixin-events": "0.0.3",
     "node-weixin-request": "^0.3.0",
-    "node-weixin-settings": "0.0.6",
+    "node-weixin-settings": "0.1.0",
     "node-weixin-util": "^0.2.0"
   },
   "devDependencies": {
@@ -32,12 +32,12 @@
     "express": "^4.13.3",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-jshint": "0.11.0",
+    "grunt-contrib-jshint": "0.11.3",
     "grunt-contrib-nodeunit": "^0.4.1",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha-cli": "^1.12.0",
+    "grunt-mocha-cli": "^2.0.0",
     "istanbul": "^0.4.0",
-    "jshint-stylish": "^1.0.1",
+    "jshint-stylish": "^2.1.0",
     "load-grunt-tasks": "^3.3.0",
     "mocha": "^2.3.3",
     "supertest": "^1.0.1",

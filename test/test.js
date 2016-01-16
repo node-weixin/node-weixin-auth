@@ -90,11 +90,11 @@ server.post('/weixinfail2', function (req, res) {
 });
 
 events.on(events.ACCESS_TOKEN_NOTIFY, function(eventApp, eventAuth) {
-  var auth = settings.get(app.id, 'auth');
-
-  assert.deepEqual(eventApp, app);
-  assert.equal(true, eventAuth.accessToken === auth.accessToken);
-  callbacks.push([eventApp, eventAuth]);
+  settings.get(app.id, 'auth', function(auth) {
+    assert.deepEqual(eventApp, app);
+    assert.equal(true, eventAuth.accessToken === auth.accessToken);
+    callbacks.push([eventApp, eventAuth]);
+  });
 });
 
 describe('node-weixin-auth node module', function () {
@@ -117,27 +117,28 @@ describe('node-weixin-auth node module', function () {
 
   it('should be able to get a token', function (done) {
     nodeWeixinAuth.tokenize(app, function (error, json) {
-      var auth = settings.get(app.id, 'auth');
-      assert.equal(true, !error);
-      assert.equal(true, json.access_token.length > 1);
-      assert.equal(true, json.expires_in <= 7200);
-      assert.equal(true, json.expires_in >= 7000);
-      assert.equal(true, json.access_token === auth.accessToken);
-      done();
-
+      settings.get(app.id, 'auth', function(auth) {
+        assert.equal(true, !error);
+        assert.equal(true, json.access_token.length > 1);
+        assert.equal(true, json.expires_in <= 7200);
+        assert.equal(true, json.expires_in >= 7000);
+        assert.equal(true, json.access_token === auth.accessToken);
+        done();
+      });
     });
   });
   it('should be able to determine to request within expiration', function (done) {
     nodeWeixinAuth.determine(app, function (passed) {
-      var auth = settings.get(app.id, 'auth');
-      assert.equal(true, auth.lastTime !== null);
-      assert.equal(true, !passed);
-      setTimeout(function () {
-        nodeWeixinAuth.determine(app, function (passed) {
-          assert.equal(true, passed);
-          done();
-        });
-      }, 1000);
+      settings.get(app.id, 'auth', function(auth) {
+        assert.equal(true, auth.lastTime !== null);
+        assert.equal(true, !passed);
+        setTimeout(function () {
+          nodeWeixinAuth.determine(app, function (passed) {
+            assert.equal(true, passed);
+            done();
+          });
+        }, 1000);
+      });
     });
   });
   it('should be able to determine not to request within expiration',
@@ -231,17 +232,20 @@ describe('node-weixin-auth node module', function () {
   });
 
 
-  it('should be able to get notified when access Token updated', function () {
-    var auth = settings.get(app.id, 'auth');
-    for(var i = 0; i < callbacks.length; i++) {
-      var callback = callbacks[i];
-      var appInfo = callback[0];
-      var authInfo = callback[1];
-      assert.equal(true, appInfo.id === app.id);
-      assert.equal(true, appInfo.token === app.token);
-      assert.equal(true, appInfo.secret === app.secret);
-      assert.equal(true, authInfo.accessToken === auth.accessToken);
-    }
-    assert.equal(true, callbacks.length >= 1);
+  it('should be able to get notified when access Token updated', function (done) {
+    settings.get(app.id, 'auth', function(auth) {
+      for(var i = 0; i < callbacks.length; i++) {
+        var callback = callbacks[i];
+        var appInfo = callback[0];
+        var authInfo = callback[1];
+        assert.equal(true, appInfo.id === app.id);
+        assert.equal(true, appInfo.token === app.token);
+        assert.equal(true, appInfo.secret === app.secret);
+        assert.equal(true, authInfo.accessToken === auth.accessToken);
+      }
+      assert.equal(true, callbacks.length >= 1);
+      done();
+    });
+
   });
 });
