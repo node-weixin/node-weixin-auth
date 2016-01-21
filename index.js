@@ -32,7 +32,7 @@ module.exports = {
         auth = {};
       }
 
-      if (auth.lastTime && ((now - auth.lastTime) < self.ACCESS_TOKEN_EXP)) {
+      if (auth.accessToken && auth.lastTime && ((now - auth.lastTime) < self.ACCESS_TOKEN_EXP)) {
         cb(true);
         return;
       }
@@ -56,13 +56,14 @@ module.exports = {
     };
     var url = baseUrl + 'token?' + util.toParam(params);
     restful.request(url, null, function (error, json) {
-      if (error) {
-        cb(error, json);
-        return;
-      }
       settings.get(app.id, 'auth', function (auth) {
         if (!auth) {
           auth = {};
+        }
+        if (error) {
+          auth.lastTime = null;
+          cb(error, json);
+          return;
         }
         auth.accessToken = json.access_token;
         settings.set(app.id, 'auth', auth, function() {
