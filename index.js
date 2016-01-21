@@ -38,7 +38,7 @@ module.exports = {
       }
       auth.lastTime = now;
       settings.set(app.id, 'auth', auth, function () {
-        self.tokenize(app, function () {
+        self.tokenize(app, function () { //why not function (err,json) ?
           cb(false);
         });
       });
