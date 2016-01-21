@@ -61,7 +61,7 @@ module.exports = {
           auth = {};
         }
         if (error) {
-          auth.lastTime = null;
+          auth.accessToken = null;
           cb(error, json);
           return;
         }
