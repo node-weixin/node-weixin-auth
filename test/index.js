@@ -142,7 +142,7 @@ describe('node-weixin-auth node module', function () {
   it('should be able to determine not to request within expiration',
     function (done) {
       // Change access token expiration to 7200 for testing purpose
-      nodeWeixinAuth.ACCESS_TOKEN_EXP = 200;
+      nodeWeixinAuth.ACCESS_TOKEN_EXP = 700;
       setTimeout(function () {
         nodeWeixinAuth.determine(app, function (passed) {
           assert.equal(true, !passed);
