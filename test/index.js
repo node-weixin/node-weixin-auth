@@ -2,14 +2,12 @@
 var assert = require('assert');
 var express = require('express');
 var bodyParser = require('body-parser');
-var errors = require('web-errors').errors;
 var settings = require('node-weixin-settings');
 var events = require('node-weixin-events');
 
 var request = require('supertest');
 
 var nodeWeixinAuth = require('../');
-
 
 var callbacks = [];
 
@@ -21,8 +19,8 @@ var app = {
 
 var server = express();
 server.use(bodyParser.urlencoded({
-    extended: false
-  }));
+  extended: false
+}));
 server.use(bodyParser.json());
 server.post('/weixin', function (req, res) {
   var data = nodeWeixinAuth.extract(req.body);
@@ -34,13 +32,13 @@ server.post('/weixin', function (req, res) {
     }
     switch (error) {
       case 1:
-        res.send(errors.INPUT_INVALID);
+        res.send('INPUT_INVALID');
         break;
       case 2:
-        res.send(errors.SIGNATURE_NOT_MATCH);
+        res.send('SIGNATURE_NOT_MATCH');
         break;
       default:
-        res.send(errors.UNKNOWN_ERROR);
+        res.send('UNKNOWN_ERROR');
         break;
     }
   });
@@ -54,18 +52,17 @@ server.post('/weixinfail', function (req, res) {
     }
     switch (error) {
       case 1:
-        res.send(errors.INPUT_INVALID);
+        res.send('INPUT_INVALID');
         break;
       case 2:
-        res.send(errors.SIGNATURE_NOT_MATCH);
+        res.send('SIGNATURE_NOT_MATCH');
         break;
       default:
-        res.send(errors.UNKNOWN_ERROR);
+        res.send('UNKNOWN_ERROR');
         break;
     }
   });
 });
-
 
 server.post('/weixinfail2', function (req, res) {
   var data = nodeWeixinAuth.extract(req.body);
@@ -77,20 +74,20 @@ server.post('/weixinfail2', function (req, res) {
     }
     switch (error) {
       case 1:
-        res.send(errors.INPUT_INVALID);
+        res.send('INPUT_INVALID');
         break;
       case 2:
-        res.send(errors.SIGNATURE_NOT_MATCH);
+        res.send('SIGNATURE_NOT_MATCH');
         break;
       default:
-        res.send(errors.UNKNOWN_ERROR);
+        res.send('UNKNOWN_ERROR');
         break;
     }
   });
 });
 
-events.on(events.ACCESS_TOKEN_NOTIFY, function(eventApp, eventAuth) {
-  settings.get(app.id, 'auth', function(auth) {
+events.on(events.ACCESS_TOKEN_NOTIFY, function (eventApp, eventAuth) {
+  settings.get(app.id, 'auth', function (auth) {
     assert.deepEqual(eventApp, app);
     assert.equal(true, eventAuth.accessToken === auth.accessToken);
     callbacks.push([eventApp, eventAuth]);
@@ -117,7 +114,7 @@ describe('node-weixin-auth node module', function () {
 
   it('should be able to get a token', function (done) {
     nodeWeixinAuth.tokenize(app, function (error, json) {
-      settings.get(app.id, 'auth', function(auth) {
+      settings.get(app.id, 'auth', function (auth) {
         assert.equal(true, !error);
         assert.equal(true, json.access_token.length > 1);
         assert.equal(true, json.expires_in <= 7200);
@@ -129,28 +126,29 @@ describe('node-weixin-auth node module', function () {
   });
   it('should be able to determine to request within expiration', function (done) {
     nodeWeixinAuth.determine(app, function (passed) {
-      settings.get(app.id, 'auth', function(auth) {
+      var timeOut = function () {
+        nodeWeixinAuth.determine(app, function (passed) {
+          assert.equal(true, passed);
+          done();
+        });
+      };
+      settings.get(app.id, 'auth', function (auth) {
         assert.equal(true, auth.lastTime !== null);
         assert.equal(true, !passed);
-        setTimeout(function () {
-          nodeWeixinAuth.determine(app, function (passed) {
-            assert.equal(true, passed);
-            done();
-          });
-        }, 1000);
+        setTimeout(timeOut, 1000);
       });
     });
   });
   it('should be able to determine not to request within expiration',
     function (done) {
-      //Change access token expiration to 7200 for testing purpose
-      nodeWeixinAuth.ACCESS_TOKEN_EXP = 7200;
+      // Change access token expiration to 7200 for testing purpose
+      nodeWeixinAuth.ACCESS_TOKEN_EXP = 200;
       setTimeout(function () {
         nodeWeixinAuth.determine(app, function (passed) {
           assert.equal(true, !passed);
           done();
         });
-      }, 8000);
+      }, 1000);
     });
   it('should be able to get a token and checkit', function (done) {
     nodeWeixinAuth.tokenize(app, function (error, json) {
@@ -203,7 +201,7 @@ describe('node-weixin-auth node module', function () {
       echostr: echostr
     };
     request(server).post('/weixinfail').send(data).expect(200).expect(
-      errors.UNKNOWN_ERROR).end(done);
+      'UNKNOWN_ERROR').end(done);
   });
 
   it('should be fail to auth weixin signature 2', function (done) {
@@ -219,22 +217,20 @@ describe('node-weixin-auth node module', function () {
       echostr: echostr
     };
     request(server).post('/weixinfail2').send(data).expect(200).expect(
-      errors.UNKNOWN_ERROR).end(done);
+      'UNKNOWN_ERROR').end(done);
   });
 
   it('should be able to get server ips', function (done) {
-
-    nodeWeixinAuth.ips(app, function(error, data) {
+    nodeWeixinAuth.ips(app, function (error, data) {
       assert.equal(true, !error);
       assert.equal(true, data.ip_list.length > 1);
       done();
     });
   });
 
-
   it('should be able to get notified when access Token updated', function (done) {
-    settings.get(app.id, 'auth', function(auth) {
-      for(var i = 0; i < callbacks.length; i++) {
+    settings.get(app.id, 'auth', function (auth) {
+      for (var i = 0; i < callbacks.length; i++) {
         var callback = callbacks[i];
         var appInfo = callback[0];
         var authInfo = callback[1];
@@ -246,6 +242,5 @@ describe('node-weixin-auth node module', function () {
       assert.equal(true, callbacks.length >= 1);
       done();
     });
-
   });
 });
