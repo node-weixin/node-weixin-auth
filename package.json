@@ -1,6 +1,6 @@
 {
   "name": "node-weixin-auth",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "auth module for weixin",
   "homepage": "",
   "author": {
@@ -27,7 +27,6 @@
     "gulp-mocha": "^2.0.0",
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
-    "node-weixin-events": "0.0.3",
     "node-weixin-settings": "^0.1.0",
     "supertest": "^1.2.0"
   },

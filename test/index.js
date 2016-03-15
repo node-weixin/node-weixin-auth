@@ -3,8 +3,6 @@ var assert = require('assert');
 var express = require('express');
 var bodyParser = require('body-parser');
 var settings = require('node-weixin-settings');
-var events = require('node-weixin-events');
-
 var request = require('supertest');
 
 var nodeWeixinAuth = require('../');
@@ -86,13 +84,13 @@ server.post('/weixinfail2', function (req, res) {
   });
 });
 
-events.on(events.ACCESS_TOKEN_NOTIFY, function (eventApp, eventAuth) {
+nodeWeixinAuth.onAccessToken = function (eventApp, eventAuth) {
   settings.get(app.id, 'auth', function (auth) {
     assert.deepEqual(eventApp, app);
     assert.equal(true, eventAuth.accessToken === auth.accessToken);
     callbacks.push([eventApp, eventAuth]);
   });
-});
+};
 
 describe('node-weixin-auth node module', function () {
   it('should generate signature and check it', function () {
@@ -142,7 +140,7 @@ describe('node-weixin-auth node module', function () {
   it('should be able to determine not to request within expiration',
     function (done) {
       // Change access token expiration to 7200 for testing purpose
-      nodeWeixinAuth.ACCESS_TOKEN_EXP = 700;
+      nodeWeixinAuth.ACCESS_TOKEN_EXP = 200;
       setTimeout(function () {
         nodeWeixinAuth.determine(app, function (passed) {
           assert.equal(true, !passed);
