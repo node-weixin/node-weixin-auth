@@ -31,7 +31,6 @@ module.exports = {
       if (!auth) {
         auth = {};
       }
-
       if (auth.accessToken && auth.lastTime && ((now - auth.lastTime) < self.ACCESS_TOKEN_EXP)) {
         cb(true);
         return;
@@ -42,10 +41,7 @@ module.exports = {
           cb(false);
         });
       });
-
     });
-
-
   },
   tokenize: function (app, cb) {
     var baseUrl = 'https://api.weixin.qq.com/cgi-bin/';
