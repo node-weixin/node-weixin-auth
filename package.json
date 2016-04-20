@@ -1,51 +1,50 @@
 {
   "name": "node-weixin-auth",
-  "version": "0.3.0",
-  "description": "Server auth for weixin apis",
+  "version": "0.5.0",
+  "description": "auth module for weixin",
+  "homepage": "",
   "author": {
-    "name": "JSSDKCN",
+    "name": "calidion",
     "email": "calidion@gmail.com",
-    "url": "blog.3gcnbeta.com"
+    "url": "calidion.github.io"
   },
-  "repository": "JSSDKCN/node-weixin-auth",
-  "license": "MIT",
   "files": [
-    "index.js",
-    "validations"
+    "lib"
   ],
+  "main": "lib/index.js",
   "keywords": [
-    "node-weixin-auth",
-    "auth",
-    "weixin",
-    "server",
-    "node"
+    ""
   ],
-  "dependencies": {
-    "node-form-validator": "^0.3.0",
-    "node-weixin-events": "0.0.3",
-    "node-weixin-request": "^0.3.0",
-    "node-weixin-settings": "0.1.0",
-    "node-weixin-util": "^0.2.0"
-  },
   "devDependencies": {
-    "body-parser": "^1.13.3",
-    "express": "^4.13.3",
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-jshint": "0.11.3",
-    "grunt-contrib-nodeunit": "^0.4.1",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha-cli": "^2.0.0",
-    "istanbul": "^0.4.0",
-    "jshint-stylish": "^2.1.0",
-    "load-grunt-tasks": "^3.3.0",
-    "mocha": "^2.3.3",
-    "supertest": "^1.0.1",
-    "time-grunt": "^1.2.2",
-    "web-errors": "^0.1.5"
+    "body-parser": "^1.15.0",
+    "eslint-config-xo-space": "^0.7.0",
+    "express": "^4.13.4",
+    "gulp": "^3.9.0",
+    "gulp-coveralls": "^0.1.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-exclude-gitignore": "^1.0.0",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-mocha": "^2.0.0",
+    "gulp-nsp": "^2.1.0",
+    "gulp-plumber": "^1.0.0",
+    "node-weixin-settings": "^0.1.0",
+    "supertest": "^1.2.0"
   },
+  "eslintConfig": {
+    "extends": "xo-space",
+    "env": {
+      "mocha": true
+    }
+  },
+  "repository": "node-weixin/node-weixin-auth",
   "scripts": {
-    "test": "grunt",
-    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/"
+    "prepublish": "gulp prepublish",
+    "test": "gulp"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "node-form-validator": "^0.4.0",
+    "node-weixin-request": "^0.4.0",
+    "node-weixin-util": "^0.3.1"
   }
 }
