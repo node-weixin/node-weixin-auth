@@ -111,7 +111,7 @@ describe('node-weixin-auth node module', function () {
   });
 
   it('should be able to get a token', function (done) {
-    nodeWeixinAuth.tokenize(app, function (error, json) {
+    nodeWeixinAuth.tokenize(settings, app, function (error, json) {
       settings.get(app.id, 'auth', function (auth) {
         assert.equal(true, !error);
         assert.equal(true, json.access_token.length > 1);
@@ -123,9 +123,9 @@ describe('node-weixin-auth node module', function () {
     });
   });
   it('should be able to determine to request within expiration', function (done) {
-    nodeWeixinAuth.determine(app, function (passed) {
+    nodeWeixinAuth.determine(settings, app, function (passed) {
       var timeOut = function () {
-        nodeWeixinAuth.determine(app, function (passed) {
+        nodeWeixinAuth.determine(settings, app, function (passed) {
           assert.equal(true, passed);
           done();
         });
@@ -142,14 +142,14 @@ describe('node-weixin-auth node module', function () {
       // Change access token expiration to 7200 for testing purpose
       nodeWeixinAuth.ACCESS_TOKEN_EXP = 200;
       setTimeout(function () {
-        nodeWeixinAuth.determine(app, function (passed) {
+        nodeWeixinAuth.determine(settings, app, function (passed) {
           assert.equal(true, !passed);
           done();
         });
       }, 1000);
     });
   it('should be able to get a token and checkit', function (done) {
-    nodeWeixinAuth.tokenize(app, function (error, json) {
+    nodeWeixinAuth.tokenize(settings, app, function (error, json) {
       assert.equal(true, !error);
       assert.equal(true, json.access_token.length > 1);
       assert.equal(true, json.expires_in <= 7200);
@@ -219,7 +219,7 @@ describe('node-weixin-auth node module', function () {
   });
 
   it('should be able to get server ips', function (done) {
-    nodeWeixinAuth.ips(app, function (error, data) {
+    nodeWeixinAuth.ips(settings, app, function (error, data) {
       assert.equal(true, !error);
       assert.equal(true, data.ip_list.length > 1);
       done();

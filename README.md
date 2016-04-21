@@ -28,6 +28,7 @@ $ npm install --save node-weixin-auth
 
 
 var nodeWeixinAuth = require('node-weixin-auth');
+var settings = require('node-weixin-settings');
 
 var app = {
   id: '',
@@ -36,17 +37,17 @@ var app = {
 };
 
 //手动得到accessToken
-nodeWeixinAuth.tokenize(app, function (error, json) {
+nodeWeixinAuth.tokenize(settings, app, function (error, json) {
   var accessToken = json.access_token;
 });
 
 //自动获得accessToken，并发送需要accessToken的请求
-nodeWeixinAuth.determine(app, function () {
+nodeWeixinAuth.determine(settings, app, function () {
   //这里添加发送请求的代码
 });
 
 //获取服务器IP
-nodeWeixinAuth.ips(app, function (error, data) {
+nodeWeixinAuth.ips(settings, app, function (error, data) {
   //error == false
   //data.ip_list获取IP列表
 });
