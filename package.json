@@ -1,6 +1,6 @@
 {
   "name": "node-weixin-auth",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "auth module for weixin",
   "homepage": "",
   "author": {
@@ -17,18 +17,19 @@
   ],
   "devDependencies": {
     "body-parser": "^1.15.0",
-    "eslint-config-xo-space": "^0.7.0",
+    "eslint-config-xo": "^0.15.3",
+    "eslint-config-xo-space": "^0.14.0",
     "express": "^4.13.4",
     "gulp": "^3.9.0",
     "gulp-coveralls": "^0.1.0",
-    "gulp-eslint": "^1.0.0",
+    "gulp-eslint": "^3.0.1",
     "gulp-exclude-gitignore": "^1.0.0",
-    "gulp-istanbul": "^0.10.3",
+    "gulp-istanbul": "^1.0.0",
     "gulp-mocha": "^2.0.0",
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
-    "node-weixin-settings": "^0.1.0",
-    "supertest": "^1.2.0"
+    "node-weixin-settings": "^0.2.1",
+    "supertest": "^2.0.0"
   },
   "eslintConfig": {
     "extends": "xo-space",
@@ -43,7 +44,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "node-form-validator": "^0.4.0",
+    "node-form-validator": "^1.1.0",
     "node-weixin-request": "^0.4.0",
     "node-weixin-util": "^0.3.1"
   }
