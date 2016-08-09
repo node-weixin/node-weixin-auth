@@ -6,7 +6,7 @@
 
   tokenize： 用于跟服务器验证配置信息
 
-  determine:  用于自动tokenize所有的api请求，而不需要手动在超时时重新请求
+  determine:  用于自动tokenize所有的api请求，而不需要手动在超时时重新请求，通过设置GAP的时间，降低失败率
 
   ips:  获取服务IP列表
 
@@ -35,6 +35,10 @@ var app = {
   secret: '',
   token: ''
 };
+
+// 调整TIME_GAP来避免重复请求
+// 默认是500秒，基本上不会出现失效的情况
+nodeWeixinAuth.TIME_GAP = 60;
 
 //手动得到accessToken
 nodeWeixinAuth.tokenize(settings, app, function (error, json) {
@@ -90,7 +94,7 @@ server.get('/weixin/ack', function (req, res) {
 
 ## License
 
-Apache-2.0 © [calidion](calidion.github.io)
+Apache-2.0 © [node-weixin](www.node-weixin.com)
 
 
 [npm-image]: https://badge.fury.io/js/node-weixin-auth.svg
