@@ -200,6 +200,15 @@ describe('node-weixin-auth node module', function () {
     request(server).post('/weixin').send(data).expect(200).end(done);
   });
 
+  it('should be failed to auth weixin signature 2', function (done) {
+    var data = {
+      signature: '',
+      timestamp: '',
+      nonce: ''
+    };
+    request(server).post('/weixin').send(data).expect(200).end(done);
+  });
+
   it('should be fail to auth weixin signature', function (done) {
     var time = new Date().getTime();
     var nonce = 'nonce';
